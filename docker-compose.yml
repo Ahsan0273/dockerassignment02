@@ -1,0 +1,64 @@
+version: '3'
+services:
+  broker-service:
+    build: 
+      context: .
+      dockerfile: ./rabbitMQ-service/Dockerfile
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  webhook-service:
+    build: 
+      context: .
+      dockerfile: ./webhook-service/Dockerfile
+    ports:
+      - "3005:3005"
+    depends_on:
+      - broker-service 
+    volumes:
+      - ./lib:/app/lib
+
+  billing-service:
+    build: 
+      context: .
+      dockerfile: ./billing-service/Dockerfile
+    ports:
+      - "3004:3004"
+    depends_on:
+      - broker-service
+    volumes:
+      - ./lib:/app/lib
+
+  users-service:
+    build: 
+      context: .
+      dockerfile: ./users-service/Dockerfile
+    ports:
+      - "3003:3003"
+    depends_on:
+      - broker-service
+    volumes:
+      - ./lib:/app/lib  
+
+  shipping-service:
+    build: 
+      context: .
+      dockerfile: ./shipping-service/Dockerfile
+    ports:
+      - "3002:3002"
+    depends_on:
+      - broker-service
+    volumes:
+      - ./lib:/app/lib
+
+  inventry-service:
+    build: 
+      context: .
+      dockerfile: ./inventory-service/Dockerfile
+    ports:
+      - "3001:3001"
+    depends_on:
+      - broker-service
+    volumes:
+      - ./lib:/app/lib
